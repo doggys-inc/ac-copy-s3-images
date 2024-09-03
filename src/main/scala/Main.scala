@@ -72,7 +72,7 @@ object Main extends IOApp.Simple:
       s3Client.listObjectsV2Paginator(ListObjectsV2Request.builder().bucket(sourceBucket).build())
         .asScala.flatMap(_.contents().asScala).toList
     save(objects)
-    f(
+    IO(f(
       objects.map(_.key),
       key =>
         s3Client.copyObject(
@@ -81,5 +81,4 @@ object Main extends IOApp.Simple:
             .acl(ObjectCannedACL.PUBLIC_READ)
             .build()
         )
-    )
-    IO.unit
+    ))
