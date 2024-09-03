@@ -37,7 +37,7 @@ def f(keys: List[String], copy: String => Unit): Unit =
   val keyNem: NonEmptyMap[String, NonEmptyList[String]] = keys.toNel
     .fold[NonEmptyList[String]](throw new NoSuchElementException("None.get"))(identity)
     .groupByNem(_.take(2))
-  keyNem.keys.toList.foreach(println)
+  keyNem.keys.toList.foreach(s => this.logger.debug(s"list map of key: $s"))
   keys.zipWithIndex.par.foreach { case (key, i) =>
     key match
       case s if s.endsWith(prefix) =>
