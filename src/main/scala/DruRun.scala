@@ -3,7 +3,6 @@ import cats.effect.{IO, IOApp}
 import io.circe
 import scribe.*
 import scribe.format.Formatter
-import scribe.handler.{AsynchronousLogHandle, Overflow}
 import software.amazon.awssdk.services.s3.model.*
 
 import java.nio.charset.StandardCharsets
@@ -24,15 +23,12 @@ def save_(list: List[String], fileName: String): Unit =
 
 def read: Either[circe.Error, KeyList] =
   import io.circe.parser.*
-  val string = Files.readString(Paths.get(keysJsonFileName), StandardCharsets.UTF_8)
-  parse(string).flatMap(_.as[KeyList])
+  parse(Files.readString(Paths.get(keysJsonFileName), StandardCharsets.UTF_8)).flatMap(_.as[KeyList])
 
 object DruRun extends IOApp.Simple:
   override def run: IO[Unit] =
     Logger.reset()
-    Logger.root.clearHandlers().withMinimumLevel(scribe.Level.Info)
-      .withHandler(handle = AsynchronousLogHandle(overflow = Overflow.Error), formatter = Formatter.compact)
-      .replace()
+    Logger.root.clearHandlers().withMinimumLevel(scribe.Level.Info).withHandler(formatter = Formatter.compact).replace()
     Logger.system.installJUL()
     this.logger.debug("hoge")
     this.logger.withMinimumLevel(Level.Debug).replace()
