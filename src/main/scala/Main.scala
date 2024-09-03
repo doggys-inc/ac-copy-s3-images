@@ -32,7 +32,7 @@ val prefix = s"-h.$extension"
 def f(keys: List[String], copy: String => Unit): Unit =
   this.logger.withMinimumLevel(Level.Info).replace()
   import scala.collection.parallel.CollectionConverters.*
-  val keysLength = keys.length
+  val keysLength: Int = keys.length
   this.logger.info(s"keys.length: $keysLength")
   val keyNem: NonEmptyMap[String, NonEmptyList[String]] = keys.toNel
     .fold[NonEmptyList[String]](throw new NoSuchElementException("None.get"))(identity)
